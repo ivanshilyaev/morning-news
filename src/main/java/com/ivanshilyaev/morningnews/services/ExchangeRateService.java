@@ -1,4 +1,4 @@
-package com.ivanshilyaev.morningnews.service;
+package com.ivanshilyaev.morningnews.services;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

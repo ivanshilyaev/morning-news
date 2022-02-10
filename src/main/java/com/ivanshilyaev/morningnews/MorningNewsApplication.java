@@ -1,7 +1,7 @@
 package com.ivanshilyaev.morningnews;
 
-import com.ivanshilyaev.morningnews.service.MessageBuilderService;
-import com.ivanshilyaev.morningnews.service.TelegramService;
+import com.ivanshilyaev.morningnews.services.MessageBuilderService;
+import com.ivanshilyaev.morningnews.services.TelegramService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;

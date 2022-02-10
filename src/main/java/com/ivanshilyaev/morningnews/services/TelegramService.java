@@ -1,4 +1,4 @@
-package com.ivanshilyaev.morningnews.service;
+package com.ivanshilyaev.morningnews.services;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
