@@ -31,6 +31,7 @@ public class NotionService {
         var firstFilterOption = new JsonObject();
         var secondFilterOption = new JsonObject();
         var thirdFilterOption = new JsonObject();
+        var fourthFilterOption = new JsonObject();
 
         firstFilterOption.addProperty("property", "Day");
         var select = new JsonObject();
@@ -53,9 +54,15 @@ public class NotionService {
         date2.addProperty("on_or_before", lastDayOfWeek.toString());
         thirdFilterOption.add("date", date2);
 
+        fourthFilterOption.addProperty("property", "Done");
+        var checkbox = new JsonObject();
+        checkbox.addProperty("equals", false);
+        fourthFilterOption.add("checkbox", checkbox);
+
         array.add(firstFilterOption);
         array.add(secondFilterOption);
         array.add(thirdFilterOption);
+        array.add(fourthFilterOption);
 
         and.add("and", array);
 

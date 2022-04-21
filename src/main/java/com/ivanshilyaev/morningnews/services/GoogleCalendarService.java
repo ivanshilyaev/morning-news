@@ -35,14 +35,18 @@ import java.util.List;
 @Service
 public class GoogleCalendarService {
 
+    private static final String APPLICATION_NAME = "GoogleCalendarService";
+
     private static final DateTimeFormatter PARSE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
     private static final DateTime START_OF_THE_DAY = new DateTime(Date.from(LocalDate.now().atStartOfDay()
             .atZone(ZoneId.systemDefault()).toInstant()));
+
     private static final DateTime END_OF_THE_DAY = new DateTime(Date.from(LocalDate.now().atStartOfDay().plusDays(1)
             .atZone(ZoneId.systemDefault()).toInstant()));
 
     private final Multimap<LocalDateTime, CalendarEvent> events = TreeMultimap.create();
+
     private final List<String> reminders = new ArrayList<>();
 
     private PrivateKey parsePrivateKeyContent() throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -102,8 +106,9 @@ public class GoogleCalendarService {
         Calendar calendarService = new Calendar.Builder(
                 GoogleNetHttpTransport.newTrustedTransport(),
                 new GsonFactory(),
-                authorize()
-        ).build();
+                authorize())
+                .setApplicationName(APPLICATION_NAME)
+                .build();
 
         getEventsFromParticularCalendar(calendarService, System.getenv("GOOGLE_EDUCATION_CALENDAR_ID"));
         getEventsFromParticularCalendar(calendarService, System.getenv("GOOGLE_LIFE_CALENDAR_ID"));
