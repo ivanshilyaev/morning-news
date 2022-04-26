@@ -1,8 +1,6 @@
 name: Build
 
 on:
-  pull_request:
-    branches: [ main ]
   push:
     branches: [ main ]
 
@@ -21,6 +19,7 @@ jobs:
         run: mvn -B clean package -Dmaven.test.skip --file pom.xml
 
   deploy:
+    needs: build
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
