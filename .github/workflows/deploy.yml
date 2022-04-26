@@ -1,11 +1,14 @@
-name: Build
+name: Deploy
 
 on:
-  push:
-    branches: [ main ]
+  workflow_run:
+    workflows: ["Build"]
+    types:
+      - completed
 
 jobs:
-  build:
+  deploy:
+    needs: build
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
@@ -15,14 +18,8 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: maven
-      - name: Build with Maven
+      - name: Build jar
         run: mvn -B clean package -Dmaven.test.skip --file pom.xml
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
