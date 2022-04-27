@@ -2,38 +2,63 @@ package com.ivanshilyaev.morningnews.services;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ExchangeRateService {
 
-    private static final String USD_TO_BYN_URL = "https://v6.exchangerate-api.com/v6/"
-            + System.getenv("API_TOKEN")
-            + "/pair/USD/BYN";
-    private static final String EUR_TO_BYN_URL = "https://v6.exchangerate-api.com/v6/"
-            + System.getenv("API_TOKEN")
-            + "/pair/EUR/BYN";
+    private static final OkHttpClient client = new OkHttpClient().newBuilder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .build();
+
+    private static final String BASE_CONVERSION_URL = "https://api.exchangerate.host/convert";
 
     public String getUsdExchangeRate() throws IOException {
-        return getExchangeRate(USD_TO_BYN_URL);
+        Map<String, String> params = new HashMap<>();
+        params.put("from", "USD");
+        params.put("to", "BYN");
+
+        return getExchangeRate(BASE_CONVERSION_URL, params);
     }
 
     public String getEurExchangeRate() throws IOException {
-        return getExchangeRate(EUR_TO_BYN_URL);
+        Map<String, String> params = new HashMap<>();
+        params.put("from", "EUR");
+        params.put("to", "BYN");
+
+        return getExchangeRate(BASE_CONVERSION_URL, params);
     }
 
-    private String getExchangeRate(String url) throws IOException {
-        var client = new OkHttpClient();
-        var request = new Request.Builder().url(url).build();
-        var response = client.newCall(request).execute();
+    public String getBtcExchangeRate() throws IOException {
+        Map<String, String> params = new HashMap<>();
+        params.put("from", "BTC");
+        params.put("to", "USD");
 
+        String rate = getExchangeRate(BASE_CONVERSION_URL, params);
+        return rate.substring(0, rate.indexOf('.'));
+    }
+
+    public String getExchangeRate(String url, Map<String, String> params) throws IOException {
+        HttpUrl.Builder httpBuilder = Objects.requireNonNull(HttpUrl.parse(url)).newBuilder();
+        if (params != null) {
+            for (Map.Entry<String, String> param : params.entrySet()) {
+                httpBuilder.addQueryParameter(param.getKey(), param.getValue());
+            }
+        }
+        Request request = new Request.Builder().url(httpBuilder.build()).build();
+        var response = client.newCall(request).execute();
         JsonObject root = JsonParser.parseString(Objects.requireNonNull(response.body()).string()).getAsJsonObject();
 
-        return root.get("conversion_rate").getAsString();
+        return root.get("result").getAsString();
     }
 }

@@ -34,6 +34,10 @@ public class MessageBuilderService {
         builder.append("€ - ")
                 .append(exchangeRateService.getEurExchangeRate())
                 .append(System.lineSeparator());
+        builder.append("BTC - ")
+                .append(exchangeRateService.getBtcExchangeRate())
+                .append("$")
+                .append(System.lineSeparator());
         builder.append(System.lineSeparator());
 
         // Notion tasks

@@ -74,7 +74,7 @@ public class GoogleCalendarService {
         return new HttpCredentialsAdapter(credentials);
     }
 
-    private void extractEventsContent(Events calendarEvents, Multimap<LocalDateTime, CalendarEvent> allEvents) {
+    private void extractEventsContent(Events calendarEvents) {
         for (Event event : calendarEvents.getItems()) {
             String summary = event.getSummary();
             /*
@@ -84,7 +84,7 @@ public class GoogleCalendarService {
             if (event.getStart().getDate() == null) {
                 LocalDateTime start = LocalDateTime.parse(event.getStart().getDateTime().toStringRfc3339(), PARSE_FORMAT);
                 LocalDateTime end = LocalDateTime.parse(event.getEnd().getDateTime().toStringRfc3339(), PARSE_FORMAT);
-                allEvents.put(start, new CalendarEvent(start, end, summary));
+                events.put(start, new CalendarEvent(start, end, summary));
             } else {
                 reminders.add(summary);
             }
@@ -99,7 +99,7 @@ public class GoogleCalendarService {
                 .setTimeMax(END_OF_THE_DAY)
                 .setSingleEvents(true)
                 .execute();
-        extractEventsContent(calendarEvents, events);
+        extractEventsContent(calendarEvents);
     }
 
     private void processCalendars() throws IOException, GeneralSecurityException {

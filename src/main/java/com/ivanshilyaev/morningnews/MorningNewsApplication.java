@@ -30,9 +30,6 @@ public class MorningNewsApplication {
         telegramService.sendMessage(message);
         log.info("Bot message has been sent");
 
-        // test automatic deployment
-        log.info("Function update from GitHub");
-
         return value -> message;
     }
 }
