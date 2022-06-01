@@ -17,27 +17,20 @@ public class MessageBuilderService {
 
     private static final DateTimeFormatter DISPLAY_TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 
-    private final ExchangeRateService exchangeRateService;
+    private final WeatherService weatherService;
 
     private final NotionService notionService;
 
     private final GoogleCalendarService calendarService;
 
+    private final ExchangeRateService exchangeRateService;
+
     public String buildMessage() throws IOException, GeneralSecurityException {
         StringBuilder builder = new StringBuilder();
 
-        // Exchange rates
-        builder.append("\uD83D\uDCB0 Exchange rates").append(System.lineSeparator());
-        builder.append("$ - ")
-                .append(exchangeRateService.getUsdExchangeRate())
-                .append(System.lineSeparator());
-        builder.append("€ - ")
-                .append(exchangeRateService.getEurExchangeRate())
-                .append(System.lineSeparator());
-        builder.append("BTC - ")
-                .append(exchangeRateService.getBtcExchangeRate())
-                .append("$")
-                .append(System.lineSeparator());
+        // Weather
+        builder.append("☀️ Weather").append(System.lineSeparator());
+        builder.append(weatherService.getDayForecast()).append(System.lineSeparator());
         builder.append(System.lineSeparator());
 
         // Notion tasks
@@ -77,7 +70,21 @@ public class MessageBuilderService {
                         .append(reminder)
                         .append(System.lineSeparator());
             }
+            builder.append(System.lineSeparator());
         }
+
+        // Exchange rates
+        builder.append("\uD83D\uDCB0 Exchange rates").append(System.lineSeparator());
+        builder.append("$ - ")
+            .append(exchangeRateService.getUsdExchangeRate())
+            .append(System.lineSeparator());
+        builder.append("€ - ")
+            .append(exchangeRateService.getEurExchangeRate())
+            .append(System.lineSeparator());
+        builder.append("BTC - ")
+            .append(exchangeRateService.getBtcExchangeRate())
+            .append("$")
+            .append(System.lineSeparator());
         builder.append(System.lineSeparator());
 
         return builder.toString();
